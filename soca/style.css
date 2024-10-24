@@ -1,0 +1,698 @@
+/*soca-style frame Work : by Ammar chacal */
+
+
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap');
+/* "Fredoka", sans-serif; */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+/* "Ubuntu", sans-serif; */
+/*Arabic fonts*/
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+/* "Rubik", sans-serif; */
+@import url('https://fonts.googleapis.com/css2?family=Changa:wght@200..800&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+/* "Changa", sans-serif; */
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+body{
+    width: 100%;
+    height: 100vh;
+}
+/*root*/
+:root {
+    /*buttons*/
+    --btn: #fff;
+    --btn-3d: ;
+    --btn-slide: ;
+    --btn-g: ;
+    /*border*/
+    --border-1: 3px;
+    --border-2: 5px;
+    /*colors*/
+    --color-primary: black;
+    --color-primary2: white;
+    /*rems*/
+    --rem1: 3rem;
+    --rem2: 7rem;
+    --rem3: 10rem;
+    --rem4: 15rem;
+    --rem5: 20rem;
+    --rem6: 25rem;
+    --rem7: 30rem;
+}
+/*
+background-color
+color
+padding & margin
+font size 
+font family
+widhte
+height
+border 
+border-radius
+shadow
+display
+justify
+aligne
+over flow 
+z index 
+position
+
+
+*/
+/* background-color */
+.bg-red {
+    background-color: red;
+}
+
+.bg-blue {
+    background-color: blue;
+}
+
+.bg-green {
+    background-color: green;
+}
+
+.bg-yellow {
+    background-color: yellow;
+}
+
+.bg-black {
+    background-color: black;
+}
+
+.bg-white {
+    background-color: white;
+}
+
+.bg-indigo {
+    background-color: indigo;
+}
+
+.bg-orange {
+    background-color: orange;
+}
+
+.bg-pink {
+    background-color: pink;
+}
+
+.bg-violet {
+    background-color: violet;
+}
+
+.bg-gray {
+    background-color: gray;
+}
+
+.bg-brown {
+    background-color: brown;
+}
+
+.bg-transparent {
+    background-color: transparent;
+}
+
+.bg-rose {
+    background-color: rgb(225 29 72);
+}
+
+.bg-purple {
+    background-color: purple;
+}
+
+.bg-sky {
+    background-color: skyblue;
+}
+
+.bg-cyan {
+    background-color: cyan;
+}
+
+.bg-teal {
+    background-color: teal;
+}
+
+.bg-emerald {
+    background-color: rgb(2 44 34);
+}
+
+.bg-lime {
+    background-color: lime;
+}
+
+/* colors*/
+.red {
+    color: red;
+}
+
+.blue {
+    color: blue;
+}
+
+.green {
+    color: green;
+}
+
+.yellow {
+    color: yellow;
+}
+
+.black {
+    color: black;
+}
+
+.white {
+    color: white;
+}
+
+.indigo {
+    color: indigo;
+}
+
+.orange {
+    color: orange;
+}
+
+.pink {
+    color: pink;
+}
+
+.violet {
+    color: violet;
+}
+
+.gray {
+    color: gray;
+}
+
+.brown {
+    color: brown;
+}
+
+.transparent {
+    color: transparent;
+}
+
+.rose {
+    color: rgb(225 29 72);
+}
+
+.purple {
+    color: purple;
+}
+
+.sky {
+    color: skyblue;
+}
+
+.cyan {
+    color: cyan;
+}
+
+.teal {
+    color: teal;
+}
+
+.emerald {
+    color: rgb(2 44 34);
+}
+
+.lime {
+    color: lime;
+}
+
+/* padding & margin */
+
+.p-1 {
+    padding: 0.4rem;
+}
+
+.p-2 {
+    padding: 2rem;
+}
+
+.p-3 {
+    padding: 3rem;
+}
+.p-a {
+    margin: auto;
+}
+
+.m-1 {
+    margin: 1rem;
+}
+
+.m-2 {
+    margin: 2rem;
+}
+
+.m-3 {
+    margin: 3rem;
+}
+.m-a {
+    margin: auto;
+}
+/* fonts size */
+.h1 {
+    font-size: 3rem;
+}
+
+.h2 {
+    font-size: 2rem;
+}
+
+.h3 {
+    font-size: 1rem;
+}
+
+/* fonts family */
+.font-sans {
+    font-family: sans-serif;
+}
+
+.font-serif {
+    font-family: serif;
+}
+
+.font-mono {
+    font-family: monospace;
+}
+.font-1{
+   font-family:  "Fredoka", sans-serif;
+}
+.font-2{
+    font-family: "Ubuntu", sans-serif;
+}
+.font-A-1{
+    font-family: "Changa", sans-serif;
+}
+.font-A-2{
+    font-family: "Rubik", sans-serif;
+}
+
+/* fonts weight */
+.f-w-1 {
+    font-weight: lighter;
+}
+
+.f-w-2 {
+    font-weight: bold;
+}
+
+.f-w-3 {
+    font-weight: bolder;
+}
+
+/*widhts*/
+.w-full {
+    width: 100%;
+}
+.w-1 {
+    width: var(--rem1);
+}
+
+.w-2 {
+    width: var(--rem2);
+}
+
+.w-3 {
+    width: var(--rem3);
+}
+
+.w-4 {
+    width: var(--rem4);
+}
+
+.w-5 {
+    width: var(--rem5);
+}
+
+.w-6 {
+    width: var(--rem6);
+}
+
+.w-7 {
+    width: var(--rem7);
+}
+
+/*height*/
+.h-full {
+    height: 100%;
+}
+.h-1 {
+    height: var(--rem1);
+}
+
+.h-2 {
+    height: var(--rem2);
+}
+
+.h-3 {
+    height: var(--rem3);
+}
+
+.h-4 {
+    height: var(--rem4);
+}
+
+.h-5 {
+    height: var(--rem5);
+}
+
+.h-6 {
+    height: var(--rem6);
+}
+
+.h-7 {
+    height: var(--rem7);
+}
+
+/*border-radius*/
+.round {
+    border-radius: 8px;
+}
+
+.round-1 {
+    border-radius: 16px;
+}
+
+.round-2 {
+    border-radius: 32px;
+}
+
+.round-full {
+    border-radius: 50%;
+}
+
+/*border*/
+.border {
+    border: var(--border-1) var(--color-primary) solid;
+}
+
+.border-2 {
+    border: var(--border-1) var(--color-primary2) solid;
+}
+
+.border-1 {
+    border: var(--border-2) var(--color-primary) solid;
+}
+
+.border-2-2 {
+    border: var(--border-2) var(--color-primary2) solid;
+}
+
+/*shadows*/
+.shadow {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+}
+
+.shadow-2 {
+    box-shadow: 0 10px 9px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+}
+
+
+/* diplay */
+
+.display-f {
+    display: flex;
+}
+
+.display-g {
+    display: grid;
+}
+.display-i {
+    display: inline;
+}
+
+.display-b {
+    display: block;
+}
+/*flex*/
+
+.justify-center {
+    justify-content: center;
+}
+
+.justify-start {
+    justify-content: start;
+}
+
+.justify-end {
+    justify-content: end;
+}
+
+
+.items-center {
+    align-items: center;
+}
+
+.items-start {
+    align-items: start;
+}
+
+.items-end {
+    align-items: end;
+}
+
+.flex-r {
+    flex-direction: row;
+}
+
+.flex-c {
+    flex-direction: column;
+}
+
+/*Gride*/
+
+
+/*position*/
+.position-r{
+    position: relative;
+}
+.position-static{
+    position: static;
+}
+.position-f{
+    position:fixed ;
+}
+.position-a{
+    position: absolute;
+}
+.position-sticky{
+    position: sticky;
+}
+/*z-index*/
+.z-1{
+    z-index: 1;
+}
+.z-2{
+    z-index: 2;
+}
+.z-3{
+    z-index: 3;
+}
+.z-4{
+    z-index: 4;
+}
+.z-5{
+    z-index: 5;
+}
+.z-6{
+    z-index: 6;
+}
+.z-7{
+    z-index: 7;
+}
+/*over flow*/
+.over-h{
+    overflow: hidden;
+}
+.over-v{
+    overflow: visible;
+}
+.over-a{
+    overflow: auto;
+}
+.over-s{
+    overflow: scroll;
+}
+/*text decoretion*/
+.decoration{
+    text-decoration: none;
+}
+/*text transform*/
+.uppercase{
+    text-transform: uppercase;
+}
+.lowercase{
+    text-transform: lowercase;
+}
+/*list style none*/
+.list-n{
+    list-style: none;
+}
+/*text align*/
+.text-center{
+    text-align: center;
+}
+.text-start{
+    text-align: start;
+}
+.text-end{
+    text-align: end;
+}
+/*direction*/
+.rtl{
+    direction: rtl;
+}
+.ltr{
+    direction: ltr;
+}
+/*width and height with $*/
+.w-1-4{
+    width: 25%;
+}
+.w-1-2{
+    width: 50%;
+}
+.w-3-4{
+    width: 75%;
+}
+.h-1-4{
+    height: 25vh;
+}
+.h-1-2{
+    height: 50vh;
+}
+.h-3-4{
+    height: 75vh;
+}
+/*transiton*/
+.transition{
+    transition: 1s all;
+}
+/*thems*/
+.section{
+    width: 100%;
+    height: 100vh;
+}
+.container{
+    width: 90%;
+    margin: auto;
+    padding: 7px 10px 7px 10px;
+}
+.table {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    th {
+        background-color: black;
+        color: white;
+        padding: 4px;
+    }
+    td {
+        background-color: #4d749c;
+        color: white;
+        padding: 4px;
+
+    }
+    td:hover {
+        background-color: #224b74;
+
+    }
+
+}
+
+.header {
+    height: 65px;
+    width: 100%;
+    background-color: black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    i {
+        color: white;
+        margin: 10px;
+        font-size: 30px;
+        transition: ease 0.2s;
+    }
+    i:hover{
+        color: teal;
+
+    }
+
+    nav {
+        display: inline-block;
+
+        a {
+            color: white;
+            text-decoration: none;
+            font-family: monospace;
+            font-size: 20px;
+            margin-right: 15px;
+            transition: ease 0.2s;
+        }
+        a:hover{
+            color: teal;
+        }
+    }
+}
+
+.cards-container {
+    width: 100%;
+    height: 100%;
+    background-color: teal;
+    display: flex;
+    flex-wrap: wrap;
+justify-content: center;
+    .card {
+        width: 250px;
+        height: 350px;
+        background-color: #2c0b8e;
+        border-radius: 12px;
+        margin: 20px;
+        text-align: center;
+        box-shadow: -5px 10px 30px 1px black;
+
+        i {
+            font-size: 40px;
+            color: white;
+            margin: 10px;
+        }
+
+        img {
+            width: 100%;
+            height: 40%;
+            border-radius: 12px 12px 0 0;
+            background-position: center;
+            background-size: cover;
+        }
+
+        p {
+            color: white;
+            margin-top: 7px;
+            font-family: sans-serif;
+
+        }
+
+        a {
+            color: white;
+            background-color: black;
+            text-decoration: none;
+            font-family: sans-serif;
+            margin: 10px;
+            display: inline-block;
+            padding: 5px;
+            transition: ease 0.3s;
+        }
+
+        a:hover {
+            color: red;
+        }
+    }
+}
