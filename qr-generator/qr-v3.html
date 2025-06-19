@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Full Page Responsive QR Code Generator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    body {
+      display: flex;
+      flex-direction: row;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      background: rgba(255, 255, 255, 0.1);
+      width: 350px;
+      min-width: 280px;
+      padding: 30px 25px;
+      box-shadow: 4px 0 30px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      overflow-y: auto;
+    }
+
+    .sidebar h1 {
+      margin: 0 0 20px 0;
+      font-weight: 700;
+      font-size: 1.8rem;
+      letter-spacing: 1px;
+      user-select: none;
+    }
+
+    label {
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: block;
+      color: #ddd;
+    }
+
+    input[type="text"],
+    select,
+    input[type="color"],
+    input[type="file"] {
+      width: 100%;
+      padding: 12px 15px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      background-color: white;
+      color: black;
+      transition: box-shadow 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    select:focus,
+    input[type="color"]:focus,
+    input[type="file"]:focus {
+      box-shadow: 0 0 10px #764ba2;
+      background-color: #fff;
+      color: #333;
+      cursor: text;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 15px;
+      justify-content: center;
+    }
+
+    button {
+      background-color: #764ba2;
+      border: none;
+      padding: 14px 20px;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      flex: 1 1 130px;
+      min-width: 110px;
+      user-select: none;
+    }
+
+    button:hover:not(:disabled) {
+      background-color: #5a367a;
+    }
+
+    button:disabled {
+      background-color: #444;
+      cursor: not-allowed;
+    }
+
+    .main {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    #qrcode {
+      background: white;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-width: 300px;
+      max-height: 300px;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        max-height: 450px;
+        box-shadow: none;
+        padding-bottom: 20px;
+      }
+
+      .main {
+        padding: 20px;
+      }
+
+      #qrcode {
+        max-width: 260px;
+        max-height: 260px;
+      }
+
+      button {
+        flex: 1 1 100%;
+      }
+    }
+
+    @media (max-width: 400px) {
+      #qrcode {
+        max-width: 220px;
+        max-height: 220px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <aside class="sidebar">
+    <h1>QR Code Generator</h1>
+    <label for="text">Text or URL</label>
+    <input id="text" type="text" placeholder="Enter text or URL" />
+
+    <label for="dotStyle">Dot Style</label>
+    <select id="dotStyle" class="small-input">
+      <option value="square">Square</option>
+      <option value="dots">Dots</option>
+      <option value="rounded">Rounded</option>
+      <option value="classy">Classy</option>
+      <option value="classy-rounded">Classy Rounded</option>
+      <option value="extra-rounded" selected>Extra Rounded</option>
+    </select>
+
+    <label for="cornerSquareStyle">Corner Square Style</label>
+    <select id="cornerSquareStyle" class="small-input">
+      <option value="square">Square</option>
+      <option value="dot">Dot</option>
+      <option value="extra-rounded" selected>Extra Rounded</option>
+      <option value="rounded">Rounded</option>
+    </select>
+
+    <label for="dotColor">Dot Color</label>
+    <input type="color" id="dotColor" value="#333333" />
+
+    <label for="cornerColor">Corner Color</label>
+    <input type="color" id="cornerColor" value="#764ba2" />
+
+    <label for="bgColor">Background Color</label>
+    <input type="color" id="bgColor" value="#ffffff" />
+
+    <label for="logoInput">Upload Logo Image (optional)</label>
+    <input type="file" id="logoInput" accept="image/*" />
+
+    <div class="buttons">
+      <button id="generateBtn">Generate QR Code</button>
+      <button id="downloadSvgBtn" disabled>Download SVG</button>
+      <button id="downloadPngBtn" disabled>Download PNG</button>
+      <button id="clearBtn" style="background:#e74c3c;">Clear</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div id="qrcode" aria-label="QR Code preview"></div>
+  </main>
+
+  <script src="qr-code-styling.js.js"></script>
+  <script>
+    const textInput = document.getElementById('text');
+    const generateBtn = document.getElementById('generateBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const downloadSvgBtn = document.getElementById('downloadSvgBtn');
+    const downloadPngBtn = document.getElementById('downloadPngBtn');
+    const qrcodeContainer = document.getElementById('qrcode');
+
+    const dotStyleSelect = document.getElementById('dotStyle');
+    const cornerSquareStyleSelect = document.getElementById('cornerSquareStyle');
+    const dotColorInput = document.getElementById('dotColor');
+    const cornerColorInput = document.getElementById('cornerColor');
+    const bgColorInput = document.getElementById('bgColor');
+    const logoInput = document.getElementById('logoInput');
+
+    let qrCode = null;
+    let logoDataUrl = null;
+
+    logoInput.addEventListener('change', () => {
+      const file = logoInput.files[0];
+      if (!file) {
+        logoDataUrl = null;
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        logoDataUrl = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function generateQRCode() {
+      const text = textInput.value.trim();
+      if (!text) {
+        alert('Please enter text or URL to generate QR code.');
+        return;
+      }
+      qrcodeContainer.innerHTML = '';
+
+      qrCode = new QRCodeStyling({
+        width: 300,
+        height: 300,
+        data: text,
+        image: logoDataUrl || "",
+        imageOptions: {
+          crossOrigin: "anonymous",
+          margin: 5,
+          hideIfTooSmall: true,
+          imageSize: 0.2,
+        },
+        dotsOptions: {
+          color: dotColorInput.value,
+          type: dotStyleSelect.value,
+        },
+        backgroundOptions: {
+          color: bgColorInput.value,
+        },
+        cornersSquareOptions: {
+          type: cornerSquareStyleSelect.value,
+          color: cornerColorInput.value,
+        },
+        cornersDotOptions: {
+          type: cornerSquareStyleSelect.value === 'dot' ? 'dot' : 'square',
+          color: cornerColorInput.value,
+        },
+      });
+
+      qrCode.append(qrcodeContainer);
+      downloadSvgBtn.disabled = false;
+      downloadPngBtn.disabled = false;
+    }
+
+    generateBtn.addEventListener('click', generateQRCode);
+
+    downloadSvgBtn.addEventListener('click', () => {
+      if (!qrCode) {
+        alert('Generate a QR code first!');
+        return;
+      }
+      qrCode.download({ name: "qr-code", extension: "svg" });
+    });
+
+    downloadPngBtn.addEventListener('click', () => {
+      if (!qrCode) {
+        alert('Generate a QR code first!');
+        return;
+      }
+      qrCode.download({ name: "qr-code", extension: "png" });
+    });
+
+    clearBtn.addEventListener('click', () => {
+      textInput.value = '';
+      qrcodeContainer.innerHTML = '';
+      logoInput.value = '';
+      logoDataUrl = null;
+      downloadSvgBtn.disabled = true;
+      downloadPngBtn.disabled = true;
+      qrCode = null;
+      textInput.focus();
+    });
+
+    textInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        generateQRCode();
+      }
+    });
+  </script>
+</body>
+
+</html>

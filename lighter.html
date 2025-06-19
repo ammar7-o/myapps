@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Link Card Manager</title>
+  <meta name="author" content="Ammar chacal" />
+
+  <!-- Load Inter font for text -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <!-- Load Material Icons font from Google Fonts -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+  <style>
+    /* Global box-sizing */
+    * {
+      box-sizing: border-box;
+    }
+
+    /* Root variables */
+    :root {
+      --bg-color: #f9fafb;
+      --card-color: #ffffff;
+      --text-color: #111827;
+      --link-color: #2563eb;
+      --btn-bg: #e0e7ff;
+      --btn-hover: #c7d2fe;
+      --notif-bg: #10b981;
+      --notif-color: #ffffff;
+      --border-color: #e5e7eb;
+      --shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    body.dark {
+      --bg-color: #1f2937;
+      --card-color: #374151;
+      --text-color: #f9fafb;
+      --link-color: #60a5fa;
+      --btn-bg: #4b5563;
+      --btn-hover: #6b7280;
+      --notif-bg: #059669;
+      --border-color: #4b5563;
+      --shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    body {
+      background: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 4rem 1rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.3s ease, color 0.3s ease;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      text-align: center;
+      user-select: none;
+    }
+
+    h4 {
+      font-weight: 400;
+      font-size: 1rem;
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      color: var(--link-color);
+    }
+
+    .container {
+      max-width: 900px;
+      width: 100%;
+      flex-grow: 1;
+    }
+
+    /* Buttons */
+    button {
+      background: var(--btn-bg);
+      border: none;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      user-select: none;
+    }
+
+    button:hover,
+    button:focus {
+      background: var(--btn-hover);
+      outline: none;
+    }
+
+    button:focus-visible {
+      outline: 2px solid var(--link-color);
+      outline-offset: 2px;
+    }
+
+    /* Toggle Menu button */
+    .form-toggle-btn {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1001;
+      background: var(--btn-bg);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* Dropdown wrapper */
+    .dropdown-wrapper {
+      position: fixed;
+      top: 4rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--card-color);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.4s ease, opacity 0.4s ease;
+      z-index: 1000;
+      width: 95%;
+      max-width: 900px;
+      overflow-y: auto;
+     
+    }
+
+    .dropdown-wrapper.active {
+      max-height: 600px;
+      opacity: 1;
+    }
+
+    /* Dropdown content */
+    .form-dropdown {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .form-dropdown form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    input[type="text"],
+    input[type="url"],
+    select,
+    textarea {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-color);
+      color: var(--text-color);
+      transition: background 0.3s ease;
+      min-width: 100px;
+      font-family: inherit;
+      font-size: 1rem;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--border-color);
+    }
+
+    /* File input */
+    input[type="file"]::file-selector-button {
+      background: var(--btn-bg);
+      color: var(--text-color);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-right: 0.5rem;
+      font-weight: 600;
+      transition: background 0.2s ease;
+    }
+
+    input[type="file"]::file-selector-button:hover,
+    input[type="file"]::file-selector-button:focus {
+      background: var(--btn-hover);
+      outline: none;
+    }
+
+    /* Actions container */
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card-color);
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      margin: 10px;
+      justify-content: space-between;
+      align-items: center;
+      transition: transform 0.2s ease;
+      flex-direction: column;
+      gap: 1rem;
+      text-align: left;
+      word-break: break-word;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+    }
+
+    .card a {
+      text-decoration: none;
+      color: var(--link-color);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .card img {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .card button.icon {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--text-color);
+      padding: 0.15rem 0.5rem;
+      border-radius: 6px;
+      transition: background 0.15s ease;
+    }
+
+    .card button.icon:hover,
+    .card button.icon:focus {
+      background: var(--btn-bg);
+      outline: none;
+    }
+
+    .card button.icon:focus-visible {
+      outline: 2px solid var(--link-color);
+      outline-offset: 2px;
+    }
+
+    /* Material icons style */
+    .material-icons {
+      font-family: 'Material Icons';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 22px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+      color: var(--text-color);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* Category groups */
+    .grid-view .category-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .category-group {
+      margin-bottom: 2rem;
+    }
+
+    .category-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 1.5rem 0 0.5rem;
+      user-select: none;
+    }
+
+    /* Notification */
+    .notification {
+      position: fixed;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--notif-bg);
+      color: var(--notif-color);
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      display: none;
+      font-weight: 600;
+      user-select: none;
+      z-index: 3000;
+    }
+
+    /* Modal overlay */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      display: none;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    /* Modal box */
+    .modal {
+      background: var(--card-color);
+      color: var(--text-color);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      user-select: none;
+    }
+
+    /* Modal buttons container */
+    .modal-buttons {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* Modal buttons styles */
+    .modal-confirm {
+      background: #ef4444;
+      /* red */
+      color: #fff;
+    }
+
+    .modal-confirm:hover,
+    .modal-confirm:focus {
+      background: #dc2626;
+      outline: none;
+    }
+
+    .modal-cancel {
+      background: var(--btn-bg);
+      color: var(--text-color);
+    }
+
+    .modal-cancel:hover,
+    .modal-cancel:focus {
+      background: var(--btn-hover);
+      outline: none;
+    }
+
+    .modal-confirm:focus-visible,
+    .modal-cancel:focus-visible {
+      outline: 2px solid var(--link-color);
+      outline-offset: 2px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      .dropdown-wrapper {
+        top: 3.5rem;
+        left: 0;
+        transform: none;
+        width: 100vw;
+        max-width: 100vw;
+        border-radius: 0;
+        max-height: 80vh;
+        /* higher limit on mobile */
+      }
+
+      .form-dropdown form {
+        flex-direction: column;
+      }
+
+      .card {
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>🌐 Link Card Manager</h1>
+  <h4>BY : Ammar chacal</h4>
+  <button class="form-toggle-btn" onclick="toggleMenu()" aria-expanded="false" aria-controls="menuDropdown"
+    aria-label="Toggle menu">
+    📂 Menu
+  </button>
+
+  <div id="menuDropdown" class="dropdown-wrapper" role="region" aria-live="polite" aria-hidden="true" tabindex="-1">
+    <div class="form-dropdown">
+      <!-- Single add form -->
+      <form id="linkForm" aria-label="Add a new link">
+        <input type="text" id="title" placeholder="Title" required aria-required="true" />
+        <input type="url" id="url" placeholder="URL (include http:// or https://)" required aria-required="true" />
+        <input type="text" id="category" list="defaultCategories" placeholder="Category" required aria-required="true" />
+        <datalist id="defaultCategories">
+          <option value="Work"></option>
+          <option value="Personal"></option>
+          <option value="Social"></option>
+          <option value="News"></option>
+          <option value="Tools"></option>
+        </datalist>
+        <button type="submit" aria-label="Add link">➕ Add</button>
+      </form>
+
+      <!-- Bulk add form -->
+      <form id="bulkAddForm" aria-label="Bulk add links">
+        <textarea id="bulkInput"
+          placeholder="Example:\nGoogle|https://google.com|Search\nGitHub|https://github.com|Tools"></textarea>
+        <button type="submit" aria-label="Add multiple links">➕ Add Multiple</button>
+      </form>
+
+      <div class="actions">
+        <button onclick="exportJSON()" aria-label="Export links as JSON">📤 Export JSON</button>
+        <input type="file" accept="application/json" onchange="importJSON(event)" aria-label="Import links from JSON" />
+        <button onclick="toggleViewMode()" aria-label="Toggle grid or list view">🗂 Toggle View</button>
+        <button onclick="toggleDarkMode()" aria-label="Toggle dark mode">🌙 Toggle Dark Mode</button>
+        <button onclick="confirmDeleteAll()" aria-label="Delete all links"
+          style="background:#ef4444; color:#fff; font-weight: 700;">
+          🗑 Delete All
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" id="cards" aria-live="polite" aria-atomic="true">
+    <!-- Link cards will be rendered here -->
+  </div>
+
+  <div class="notification" id="notification" role="alert" aria-live="assertive"></div>
+
+  <!-- Confirm Delete Modal -->
+  <div class="modal-overlay" id="customModal" role="dialog" aria-modal="true" aria-labelledby="modalMessage"
+    tabindex="-1">
+    <div class="modal">
+      <div id="modalMessage"></div>
+      <div class="modal-buttons"></div>
+    </div>
+  </div>
+
+  <!-- Edit Link Modal -->
+  <div class="modal-overlay" id="editModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle" tabindex="-1" style="display:none;">
+    <div class="modal">
+      <h2 id="editModalTitle">Edit Link</h2>
+      <form id="editForm">
+        <label for="editTitle">Title</label><br />
+        <input type="text" id="editTitle" name="editTitle" required /><br />
+        <label for="editUrl">URL</label><br />
+        <input type="url" id="editUrl" name="editUrl" required /><br />
+        <label for="editCategory">Category</label><br />
+        <input type="text" id="editCategory" name="editCategory" list="defaultCategories" required /><br />
+        <div style="margin-top: 1rem; display:flex; justify-content:center; gap: 1rem;">
+          <button type="submit">Save</button>
+          <button type="button" onclick="closeEditModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // State variables
+    let links = JSON.parse(localStorage.getItem('links') || '[]');
+    let darkMode = localStorage.getItem('darkMode') === 'true';
+    let gridView = localStorage.getItem('gridView') === 'true';
+
+    // Elements
+    const notification = document.getElementById('notification');
+    const modalOverlay = document.getElementById('customModal');
+    const modalMessage = document.getElementById('modalMessage');
+    const modalButtons = modalOverlay.querySelector('.modal-buttons');
+    const menuDropdown = document.getElementById('menuDropdown');
+    const toggleBtn = document.querySelector('.form-toggle-btn');
+
+    // Edit modal elements
+    const editModal = document.getElementById('editModal');
+    const editForm = document.getElementById('editForm');
+    const editTitleInput = document.getElementById('editTitle');
+    const editUrlInput = document.getElementById('editUrl');
+    const editCategoryInput = document.getElementById('editCategory');
+    let editingIndex = null;
+
+    // Initialize dark and grid mode
+    if (darkMode) document.body.classList.add('dark');
+    if (gridView) document.body.classList.add('grid-view');
+
+    // Toggle menu
+    function toggleMenu() {
+      const isActive = menuDropdown.classList.toggle('active');
+      menuDropdown.setAttribute('aria-hidden', !isActive);
+      toggleBtn.setAttribute('aria-expanded', isActive);
+      if (isActive) {
+        menuDropdown.focus();
+      }
+    }
+
+    // Show notification message
+    function showNotification(message) {
+      notification.textContent = message;
+      notification.style.display = 'block';
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 3000);
+    }
+
+    // Get favicon URL
+    function getFavicon(url) {
+      try {
+        const urlObj = new URL(url);
+        return `${urlObj.origin}/favicon.ico`;
+      } catch {
+        return '';
+      }
+    }
+
+    // Save to localStorage
+    function saveToLocalStorage() {
+      localStorage.setItem('links', JSON.stringify(links));
+    }
+
+    // Render links grouped by category
+    function renderLinks() {
+      const cards = document.getElementById('cards');
+      cards.innerHTML = '';
+      if (links.length === 0) {
+        cards.innerHTML = '<p style="text-align:center; user-select:none; color: var(--border-color);">No links saved yet.</p>';
+        return;
+      }
+
+      const categories = {};
+      links.forEach((link, index) => {
+        if (!categories[link.category]) categories[link.category] = [];
+        categories[link.category].push({ ...link, index });
+      });
+
+      Object.keys(categories).sort().forEach(cat => {
+        const groupDiv = document.createElement('div');
+        groupDiv.classList.add('category-group');
+        groupDiv.setAttribute('aria-label', `Category: ${cat}`);
+
+        const catTitle = document.createElement('h3');
+        catTitle.className = 'category-title';
+        catTitle.textContent = cat;
+        groupDiv.appendChild(catTitle);
+
+        categories[cat].forEach(({ title, url, index }) => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.setAttribute('role', 'listitem');
+
+          // Link with favicon
+          const a = document.createElement('a');
+          a.href = url;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.setAttribute('aria-label', `Open ${title} in new tab`);
+
+          const faviconUrl = getFavicon(url);
+          if (faviconUrl) {
+            const img = document.createElement('img');
+            img.src = faviconUrl;
+            img.alt = '';
+            img.loading = 'lazy';
+            a.appendChild(img);
+          }
+          a.appendChild(document.createTextNode(title));
+          card.appendChild(a);
+
+          // Buttons container
+          const btnContainer = document.createElement('div');
+
+          // Edit button
+          const editBtn = document.createElement('button');
+          editBtn.className = 'icon';
+          editBtn.setAttribute('aria-label', `Edit ${title}`);
+          editBtn.innerHTML = '<span class="material-icons" aria-hidden="true">edit</span>';
+          editBtn.addEventListener('click', () => editLink(index));
+          btnContainer.appendChild(editBtn);
+
+          // Delete button
+          const deleteBtn = document.createElement('button');
+          deleteBtn.className = 'icon';
+          deleteBtn.setAttribute('aria-label', `Delete ${title}`);
+          deleteBtn.innerHTML = '<span class="material-icons" aria-hidden="true">delete</span>';
+          deleteBtn.addEventListener('click', () => confirmDelete(index));
+          btnContainer.appendChild(deleteBtn);
+
+          card.appendChild(btnContainer);
+
+          groupDiv.appendChild(card);
+        });
+
+        cards.appendChild(groupDiv);
+      });
+    }
+
+    // Validate URL format
+    function isValidUrl(url) {
+      try {
+        new URL(url);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    // Add single link form submit
+    document.getElementById('linkForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = e.target.title.value.trim();
+      const url = e.target.url.value.trim();
+      const category = e.target.category.value.trim();
+
+      if (!title || !url || !category) {
+        showNotification('Please fill all fields.');
+        return;
+      }
+      if (!isValidUrl(url)) {
+        showNotification('Invalid URL.');
+        return;
+      }
+
+      links.push({ title, url, category });
+      saveToLocalStorage();
+      renderLinks();
+      e.target.reset();
+      showNotification('Link added.');
+    });
+
+    // Bulk add form submit
+    document.getElementById('bulkAddForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const lines = e.target.bulkInput.value.trim().split('\n');
+      let added = 0;
+
+      lines.forEach(line => {
+        const parts = line.split('|');
+        if (parts.length === 3) {
+          const [title, url, category] = parts.map(s => s.trim());
+          if (title && url && category && isValidUrl(url)) {
+            links.push({ title, url, category });
+            added++;
+          }
+        }
+      });
+
+      if (added > 0) {
+        saveToLocalStorage();
+        renderLinks();
+        showNotification(`${added} links added.`);
+        e.target.reset();
+      } else {
+        showNotification('No valid links found.');
+      }
+    });
+
+    // Export JSON
+    function exportJSON() {
+      if (links.length === 0) {
+        showNotification('No links to export.');
+        return;
+      }
+      const dataStr = JSON.stringify(links, null, 2);
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'links.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Import JSON
+    function importJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const importedLinks = JSON.parse(e.target.result);
+          if (Array.isArray(importedLinks)) {
+            importedLinks.forEach(link => {
+              if (link.title && link.url && link.category && isValidUrl(link.url)) {
+                links.push(link);
+              }
+            });
+            saveToLocalStorage();
+            renderLinks();
+            showNotification('Links imported.');
+          } else {
+            showNotification('Invalid JSON format.');
+          }
+        } catch {
+          showNotification('Error reading JSON.');
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    // Toggle grid/list view
+    function toggleViewMode() {
+      gridView = !gridView;
+      if (gridView) {
+        document.body.classList.add('grid-view');
+      } else {
+        document.body.classList.remove('grid-view');
+      }
+      localStorage.setItem('gridView', gridView);
+    }
+
+    // Toggle dark mode
+    function toggleDarkMode() {
+      darkMode = !darkMode;
+      if (darkMode) {
+        document.body.classList.add('dark');
+      } else {
+        document.body.classList.remove('dark');
+      }
+      localStorage.setItem('darkMode', darkMode);
+    }
+
+    // Confirm delete single link
+    function confirmDelete(index) {
+      showCustomModal('Are you sure you want to delete this link?', [
+        {
+          label: 'Delete',
+          className: 'modal-confirm',
+          action: () => {
+            links.splice(index, 1);
+            saveToLocalStorage();
+            renderLinks();
+            hideCustomModal();
+            showNotification('Link deleted.');
+          }
+        },
+        {
+          label: 'Cancel',
+          className: 'modal-cancel',
+          action: hideCustomModal
+        }
+      ]);
+    }
+
+    // Confirm delete all
+    function confirmDeleteAll() {
+      if (links.length === 0) {
+        showNotification('No links to delete.');
+        return;
+      }
+      showCustomModal('Are you sure you want to delete all links?', [
+        {
+          label: 'Delete All',
+          className: 'modal-confirm',
+          action: () => {
+            links = [];
+            saveToLocalStorage();
+            renderLinks();
+            hideCustomModal();
+            showNotification('All links deleted.');
+          }
+        },
+        {
+          label: 'Cancel',
+          className: 'modal-cancel',
+          action: hideCustomModal
+        }
+      ]);
+    }
+
+    // Show custom modal with buttons
+    function showCustomModal(message, buttons) {
+      modalMessage.textContent = message;
+      modalButtons.innerHTML = '';
+      buttons.forEach(btn => {
+        const button = document.createElement('button');
+        button.textContent = btn.label;
+        button.className = btn.className;
+        button.addEventListener('click', btn.action);
+        modalButtons.appendChild(button);
+      });
+      modalOverlay.classList.add('active');
+      modalOverlay.focus();
+    }
+
+    // Hide custom modal
+    function hideCustomModal() {
+      modalOverlay.classList.remove('active');
+      modalMessage.textContent = '';
+      modalButtons.innerHTML = '';
+    }
+
+    // Edit Link modal functions
+    function editLink(index) {
+      editingIndex = index;
+      const link = links[index];
+      editTitleInput.value = link.title;
+      editUrlInput.value = link.url;
+      editCategoryInput.value = link.category;
+      openEditModal();
+    }
+
+    function openEditModal() {
+      editModal.style.display = 'flex';
+      editModal.setAttribute('aria-hidden', 'false');
+      editTitleInput.focus();
+    }
+
+    function closeEditModal() {
+      editModal.style.display = 'none';
+      editModal.setAttribute('aria-hidden', 'true');
+      editingIndex = null;
+    }
+
+    // Handle edit form submit
+    editForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const title = editTitleInput.value.trim();
+      const url = editUrlInput.value.trim();
+      const category = editCategoryInput.value.trim();
+
+      if (!title || !url || !category) {
+        showNotification('All fields are required.');
+        return;
+      }
+      if (!isValidUrl(url)) {
+        showNotification('Invalid URL.');
+        return;
+      }
+
+      if (editingIndex !== null) {
+        links[editingIndex] = { title, url, category };
+        saveToLocalStorage();
+        renderLinks();
+        showNotification('Link updated.');
+        closeEditModal();
+      }
+    });
+
+    // Close edit modal on clicking outside modal or pressing Escape
+    editModal.addEventListener('click', (e) => {
+      if (e.target === editModal) closeEditModal();
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (editModal.style.display === 'flex') closeEditModal();
+        if (modalOverlay.classList.contains('active')) hideCustomModal();
+      }
+    });
+
+    // Initial render
+    renderLinks();
+  </script>
+</body>
+
+</html>
