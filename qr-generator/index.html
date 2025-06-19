@@ -1,18 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Full Page Responsive QR Code Generator</title>
+  <title>Auto QR Code Generator</title>
   <style>
     * {
       box-sizing: border-box;
     }
-
-    html,
-    body {
-      margin: 0;
+    html, body {
+      margin: 0; 
       padding: 0;
       height: 100%;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -20,25 +17,22 @@
       color: #fff;
       overflow-x: hidden;
     }
-
     body {
       display: flex;
       flex-direction: row;
       min-height: 100vh;
     }
-
     .sidebar {
       background: rgba(255, 255, 255, 0.1);
       width: 350px;
       min-width: 280px;
       padding: 30px 25px;
-      box-shadow: 4px 0 30px rgba(0, 0, 0, 0.3);
+      box-shadow: 4px 0 30px rgba(0,0,0,0.3);
       display: flex;
       flex-direction: column;
       gap: 15px;
       overflow-y: auto;
     }
-
     .sidebar h1 {
       margin: 0 0 20px 0;
       font-weight: 700;
@@ -46,18 +40,13 @@
       letter-spacing: 1px;
       user-select: none;
     }
-
     label {
       font-weight: 600;
       margin-bottom: 6px;
       display: block;
       color: #ddd;
     }
-
-    input[type="text"],
-    select,
-    input[type="color"],
-    input[type="file"] {
+    input[type="text"], select, input[type="color"], input[type="file"] {
       width: 100%;
       padding: 12px 15px;
       font-size: 1rem;
@@ -69,17 +58,12 @@
       color: black;
       transition: box-shadow 0.3s ease;
     }
-
-    input[type="text"]:focus,
-    select:focus,
-    input[type="color"]:focus,
-    input[type="file"]:focus {
+    input[type="text"]:focus, select:focus, input[type="color"]:focus, input[type="file"]:focus {
       box-shadow: 0 0 10px #764ba2;
       background-color: #fff;
       color: #333;
       cursor: text;
     }
-
     .buttons {
       display: flex;
       flex-wrap: wrap;
@@ -87,7 +71,6 @@
       margin-top: 15px;
       justify-content: center;
     }
-
     button {
       background-color: #764ba2;
       border: none;
@@ -102,16 +85,13 @@
       min-width: 110px;
       user-select: none;
     }
-
     button:hover:not(:disabled) {
       background-color: #5a367a;
     }
-
     button:disabled {
       background-color: #444;
       cursor: not-allowed;
     }
-
     .main {
       flex-grow: 1;
       display: flex;
@@ -119,7 +99,6 @@
       justify-content: center;
       padding: 40px;
     }
-
     #qrcode {
       background: white;
       padding: 20px;
@@ -139,28 +118,23 @@
       body {
         flex-direction: column;
       }
-
       .sidebar {
         width: 100%;
         max-height: 450px;
         box-shadow: none;
         padding-bottom: 20px;
       }
-
       .main {
         padding: 20px;
       }
-
       #qrcode {
         max-width: 260px;
         max-height: 260px;
       }
-
       button {
         flex: 1 1 100%;
       }
     }
-
     @media (max-width: 400px) {
       #qrcode {
         max-width: 220px;
@@ -169,11 +143,11 @@
     }
   </style>
 </head>
-
 <body>
 
   <aside class="sidebar">
     <h1>QR Code Generator</h1>
+
     <label for="text">Text or URL</label>
     <input id="text" type="text" placeholder="Enter text or URL" />
 
@@ -208,7 +182,6 @@
     <input type="file" id="logoInput" accept="image/*" />
 
     <div class="buttons">
-      <button id="generateBtn">Generate QR Code</button>
       <button id="downloadSvgBtn" disabled>Download SVG</button>
       <button id="downloadPngBtn" disabled>Download PNG</button>
       <button id="clearBtn" style="background:#e74c3c;">Clear</button>
@@ -222,10 +195,9 @@
   <script src="qr-code-styling.js.js"></script>
   <script>
     const textInput = document.getElementById('text');
-    const generateBtn = document.getElementById('generateBtn');
-    const clearBtn = document.getElementById('clearBtn');
     const downloadSvgBtn = document.getElementById('downloadSvgBtn');
     const downloadPngBtn = document.getElementById('downloadPngBtn');
+    const clearBtn = document.getElementById('clearBtn');
     const qrcodeContainer = document.getElementById('qrcode');
 
     const dotStyleSelect = document.getElementById('dotStyle');
@@ -238,15 +210,18 @@
     let qrCode = null;
     let logoDataUrl = null;
 
+    // Load logo image as Data URL
     logoInput.addEventListener('change', () => {
       const file = logoInput.files[0];
       if (!file) {
         logoDataUrl = null;
+        generateQRCode();
         return;
       }
       const reader = new FileReader();
       reader.onload = () => {
         logoDataUrl = reader.result;
+        generateQRCode();
       };
       reader.readAsDataURL(file);
     });
@@ -254,9 +229,13 @@
     function generateQRCode() {
       const text = textInput.value.trim();
       if (!text) {
-        alert('Please enter text or URL to generate QR code.');
+        qrcodeContainer.innerHTML = '';
+        downloadSvgBtn.disabled = true;
+        downloadPngBtn.disabled = true;
+        qrCode = null;
         return;
       }
+
       qrcodeContainer.innerHTML = '';
 
       qrCode = new QRCodeStyling({
@@ -288,11 +267,33 @@
       });
 
       qrCode.append(qrcodeContainer);
+
       downloadSvgBtn.disabled = false;
       downloadPngBtn.disabled = false;
     }
 
-    generateBtn.addEventListener('click', generateQRCode);
+    // Generate QR code automatically on any input change
+    [
+      textInput,
+      dotStyleSelect,
+      cornerSquareStyleSelect,
+      dotColorInput,
+      cornerColorInput,
+      bgColorInput,
+    ].forEach(el => {
+      el.addEventListener('input', generateQRCode);
+    });
+
+    clearBtn.addEventListener('click', () => {
+      textInput.value = '';
+      qrcodeContainer.innerHTML = '';
+      logoInput.value = '';
+      logoDataUrl = null;
+      downloadSvgBtn.disabled = true;
+      downloadPngBtn.disabled = true;
+      qrCode = null;
+      textInput.focus();
+    });
 
     downloadSvgBtn.addEventListener('click', () => {
       if (!qrCode) {
@@ -309,24 +310,6 @@
       }
       qrCode.download({ name: "qr-code", extension: "png" });
     });
-
-    clearBtn.addEventListener('click', () => {
-      textInput.value = '';
-      qrcodeContainer.innerHTML = '';
-      logoInput.value = '';
-      logoDataUrl = null;
-      downloadSvgBtn.disabled = true;
-      downloadPngBtn.disabled = true;
-      qrCode = null;
-      textInput.focus();
-    });
-
-    textInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        generateQRCode();
-      }
-    });
   </script>
 </body>
-
 </html>
